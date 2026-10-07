@@ -1,0 +1,16 @@
+/* Site-specific overrides (loaded automatically by HugoBlox from assets/css/custom.css). */
+
+/* Research block: four focus areas read better as a 2 x 2 grid than 3 + 1. */
+@media (min-width: 1024px) {
+  #research .grid.lg\:grid-cols-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 64rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Project cards without a featured image: keep the gradient panel, drop the "missing image" icon. */
+[role="article"] .aspect-\[16\/9\] a > div > .w-16.rounded-full {
+  display: none;
+}

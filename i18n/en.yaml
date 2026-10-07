@@ -1,0 +1,4 @@
+# Site-level overrides of HugoBlox i18n strings.
+# `publication_types: ['manuscript']` is used for work under review or in preparation.
+- id: pub_manuscript
+  translation: Manuscript

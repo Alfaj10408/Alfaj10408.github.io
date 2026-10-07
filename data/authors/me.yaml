@@ -1,0 +1,178 @@
+schema: hugoblox/author/v1
+slug: me
+is_owner: true
+name:
+  display: Alfaj Uddin Ahmed
+  given: Alfaj Uddin
+  family: Ahmed
+role: Ph.D. Student in Biomedical Engineering · M.S. Student in Electrical and Computer Engineering
+bio: |
+  I am a Ph.D. student and **Leslie A. Geddes Fellow** at Purdue University's Weldon School of Biomedical
+  Engineering, co-advised by [Dr. Rachel K. Surowiec](https://engineering.purdue.edu/QBIS) (Quantitative
+  Biomedical Imaging and Spectroscopy Lab) and [Dr. Christopher L. Newman](https://medicine.iu.edu/faculty/19277/newman-christopher)
+  (Indiana University School of Medicine, Riley Hospital for Children). I am concurrently completing an
+  M.S. in Electrical and Computer Engineering at Purdue.
+
+  My research asks how machine learning systems fail, and how to train and evaluate them so that those
+  failures become measurable and fixable. Current threads: failure-composition evaluation of large language
+  models on long-horizon tasks (under review at ICLR 2027), evidence-grounded training for vision-language
+  models (manuscript in final preparation for CVPR 2027), moment-based spiking-to-analog interfaces for
+  event cameras (under review at ICASSP 2027), and generative augmentation for pediatric fracture detection
+  from radiographs.
+
+  Before Purdue I spent three years building production ML and generative-AI systems at Augmedix, IDEEZA,
+  and RadAssist: LoRA fine-tuning of clinical LLMs, Stable Diffusion and ControlNet pipelines, and a
+  17-finding chest X-ray classifier, all shipped with evaluation loops attached.
+
+affiliations:
+  - name: Weldon School of Biomedical Engineering, Purdue University
+    url: https://engineering.purdue.edu/BME
+  - name: QBIS Lab
+    url: https://engineering.purdue.edu/QBIS
+
+links:
+  - icon: hero/envelope
+    url: mailto:ahmed436@purdue.edu
+    label: Email
+  - icon: brands/github
+    url: https://github.com/Alfaj10408
+    label: GitHub
+  - icon: brands/linkedin
+    url: https://www.linkedin.com/in/alfaj-uddin-ahmed-0a5ab514a/
+    label: LinkedIn
+  - icon: academicons/google-scholar
+    url: https://scholar.google.com/citations?user=mGQcwU4AAAAJ&hl=en
+    label: Google Scholar
+  - icon: academicons/orcid
+    url: https://orcid.org/0009-0004-4991-6551
+    label: ORCID
+  - icon: brands/x
+    url: https://x.com/AlfajUddin10408
+    label: X
+
+interests:
+  - Large Language Models and Long-Horizon Reasoning
+  - Vision-Language Models, Grounding, and Hallucination
+  - Evaluation and Failure-Mode Analysis
+  - Generative AI and Diffusion Models
+  - Parameter-Efficient Fine-Tuning
+  - Medical Image Analysis and Rare-Event Detection
+  - Neuromorphic and Event-Based Vision
+  - Scalable ML Systems
+
+education:
+  - degree: Ph.D. in Biomedical Engineering
+    institution: Purdue University, West Lafayette, IN
+    year: 2025 – present
+    start: 2025-08-01
+    summary: |
+      Computational medical imaging and machine learning. Leslie A. Geddes Fellow.
+      Dissertation area: ML for pediatric fracture and abuse detection from radiographs; LLM and VLM reliability.
+  - degree: M.S. in Electrical and Computer Engineering
+    institution: Purdue University, West Lafayette, IN
+    year: 2026 – present
+    start: 2026-08-01
+    summary: |
+      Concurrent with the Ph.D.
+  - degree: B.Sc. in Biomedical Engineering
+    institution: Bangladesh University of Engineering and Technology (BUET), Dhaka
+    year: 2017 – 2022
+    start: 2017-05-01
+    end: 2022-05-31
+    summary: |
+      GPA 3.43/4.00. Thesis: automated COVID-19 infection detection and segmentation from lung CT volumes
+      using UNet++ and 3D convolutional networks.
+
+experience:
+  - role: Graduate Research Assistant · Leslie A. Geddes Fellow
+    org: Weldon School of Biomedical Engineering, Purdue University
+    start: 2025-08-01
+    summary: |
+      - **Long-horizon LLM execution** (under review at ICLR 2027): built an exact-simulator evaluation that separates correct responses from decision errors, state errors, token exhaustion, malformed outputs, and noncompliance; ran 800-sample reasoning-on/off grids on Qwen3 models served through vLLM on dual-GPU nodes with Clopper–Pearson and clustered uncertainty estimates. Reasoning mode collapsed move-selection errors from roughly 60% to 0% while leaving state-transcription errors unchanged; position labels cut Qwen3-4B state errors from 50.6% to 0.6%.
+      - Built the harness behind those results: 810 automated tests, SHA-256-pinned verbatim prompts, parser audits, token-budget controls, and resumable grid runners for unattended multi-day GPU sweeps.
+      - **Vision-language grounding** (manuscript in final preparation for CVPR 2027): characterized the "mirage" failure in which VLMs answer confidently from blank or unrelated images and evaluated TIDE across six VLMs with an image-aware judge; fine-tuned Qwen3-VL at 2B/4B/8B/32B with 4-bit QLoRA and traced an apparent scale trend to a projector co-scaling artifact.
+      - **Neuromorphic sensing interfaces** (under review at ICASSP 2027): showed that rate readout from leak-free spiking front-ends discards temporal information and proposed MoHI, a moment-based spiking-to-analog handoff equivariant to affine time warps.
+      - **Dissertation**: designing a mask-conditional latent diffusion model in a VQ-VAE latent space with ControlNet-style conditioning on radiologist-delineated lesion masks for rare-lesion detection; IRB-approved clinical data collection with pediatric radiology collaborators at Riley Hospital for Children.
+  - role: Software Engineer L2 — Backend and ML Infrastructure
+    org: Augmedix
+    start: 2022-07-01
+    end: 2025-07-31
+    summary: |
+      - Fine-tuned large language models for clinical note generation using LoRA/PEFT and built the evaluation loop around them: factual-consistency and hallucination checks against source encounter transcripts.
+      - Engineered Python and SQL pipelines on AWS carrying high-throughput clinical audio and NLP streams into real-time generative documentation; served models through FastAPI/Django endpoints.
+      - Re-architected and migrated legacy services onto Kubernetes with CI/CD, monitoring dashboards, and A/B rollout infrastructure.
+  - role: AI Engineer — Generative AI and Computer Vision
+    org: IDEEZA (remote)
+    start: 2023-09-01
+    end: 2025-07-31
+    summary: |
+      - Trained reward models and applied preference optimization to align generative outputs with human-rated quality; designed LLM-orchestrated workflows routing a request across several generative models.
+      - Engineered image-to-3D reconstruction pipelines on Stable Diffusion and ControlNet, deployed at dev-ai-mesh.ideeza.com, with automated quality control scored by FID, SSIM, and LPIPS.
+  - role: Research Engineer — AI Systems
+    org: RadAssist
+    start: 2022-05-01
+    end: 2025-07-31
+    summary: |
+      - Led R&D on a multi-label CNN classifier identifying 17 radiological findings from chest X-rays, including per-class threshold selection and confidence calibration.
+      - Instrumented evaluation pipelines with confusion-matrix analysis, calibration assessment, and systematic failure-mode review; deployed NLP summarization models that translate structured predictions into clinical narratives.
+
+skills:
+  - name: LLMs & NLP
+    items:
+      - label: Qwen3 and open instruction-tuned models
+      - label: LoRA / QLoRA / PEFT fine-tuning
+      - label: vLLM serving and reasoning-mode evaluation
+      - label: Prompt design and structured output
+      - label: Retrieval-augmented generation
+      - label: Clinical text (spaCy, NLTK, LangChain)
+  - name: Deep Learning & Generative AI
+    items:
+      - label: PyTorch, TensorFlow
+      - label: HuggingFace Transformers, Diffusers, PEFT, Accelerate
+      - label: Vision-language models
+      - label: Diffusion (DDPM, latent, ControlNet), VQ-VAE, GANs
+      - label: Contrastive and self-supervised learning
+      - label: CNNs, ViT, object detection
+  - name: Experimentation & Evaluation
+    items:
+      - label: Experimental design and pre-registered ablations
+      - label: Binomial, Clopper–Pearson, and bootstrap intervals
+      - label: Error taxonomies and calibration
+      - label: mAP, AUC, sensitivity/specificity
+      - label: FID, SSIM, LPIPS, KID
+      - label: Automated test suites
+  - name: Programming & Systems
+    items:
+      - label: Python, C/C++, SQL, Bash, MATLAB, JavaScript
+      - label: PyTorch DDP, DeepSpeed, H100/A100 clusters, CUDA
+      - label: AWS (SageMaker, EC2, S3, Lambda)
+      - label: Docker, Kubernetes, FastAPI, Flask, Django
+      - label: PostgreSQL, Firebase
+      - label: Git, GitHub Actions, CI/CD, Linux
+
+awards:
+  - title: Leslie A. Geddes Fellowship
+    awarder: Purdue University
+    date: "2025-06-01"
+    summary: Competitive graduate fellowship awarded for academic and research excellence in biomedical engineering.
+    icon: hero/academic-cap
+  - title: Kaggle Bronze Medal — RSNA Intracranial Aneurysm Detection
+    awarder: Kaggle / RSNA
+    date: "2025-01-01"
+    summary: Placed 98th (top 5%) with a score of 0.69592 on a multi-class medical imaging classification task.
+    icon: hero/trophy
+  - title: Design for Life Ventilator Engineering Competition — 2nd Place
+    awarder: Edge Foundation
+    date: "2020-07-01"
+    summary: Built a functional mechanical ventilator from first principles under competition constraints.
+    icon: hero/trophy
+  - title: European Rover Challenge — Hardware Sub-Team Lead
+    awarder: European Space Foundation
+    date: "2019-09-01"
+    summary: Led a hardware sub-team through design and integration for an international Mars-rover competition; team placed 16th globally.
+    icon: hero/rocket-launch
+  - title: IEEE SPS Winter School on Multimodal Signal Processing — Excellence Award
+    awarder: IEEE Signal Processing Society
+    date: "2019-09-01"
+    summary: Recognized for excellence in an intensive multimodal signal processing program.
+    icon: hero/star
