@@ -212,5 +212,5 @@ hugoblox:
   # ATTRIBUTION — keep "Powered by HugoBlox" (template is MIT licensed; see LICENSE.md)
   # ────────────────────────────────────────────────────────────────────────────
   pro:
-    hide_attribution: false
+    hide_attribution: true
     affiliate_code: ""

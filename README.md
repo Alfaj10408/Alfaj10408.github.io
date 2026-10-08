@@ -17,7 +17,7 @@ every push to `main`.
 | Publications (one folder per paper) | `content/publications/<slug>/index.md` |
 | Projects (one folder per project) | `content/projects/<slug>/index.md` |
 | Experience page layout | `content/experience.md` |
-| Downloadable CV | `static/uploads/Alfaj_Uddin_Ahmed_CV.pdf` |
+| Downloadable CV | `static/uploads/alfaj-uddin-ahmed-cv.pdf` |
 | Headshot and favicon | `assets/media/authors/me.png`, `assets/media/icon.png` |
 | Site settings (title, theme, header, footer) | `config/_default/params.yaml`, `hugo.yaml`, `menus.yaml` |
 
@@ -30,7 +30,7 @@ every push to `main`.
 - **Paper status changes:** edit `publication.name` (e.g. "Under review at ICLR 2027" → "ICLR 2027") and
   `publication_types`, and update the matching line in `data/authors/me.yaml` and `content/_index.md`.
 - **New project:** copy a folder under `content/projects/`, edit the front matter and summary.
-- **New CV:** replace `static/uploads/Alfaj_Uddin_Ahmed_CV.pdf` (keep the filename, it is linked from the menu).
+- **New CV:** replace `static/uploads/alfaj-uddin-ahmed-cv.pdf` (keep the filename, it is linked from the menu).
 
 ## Local preview
 

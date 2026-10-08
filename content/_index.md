@@ -12,7 +12,7 @@ sections:
       text: ''
       button:
         text: Download CV
-        url: uploads/Alfaj_Uddin_Ahmed_CV.pdf
+        url: uploads/alfaj-uddin-ahmed-cv.pdf
       headings:
         about: About
         education: Education

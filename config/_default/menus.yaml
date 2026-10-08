@@ -19,7 +19,7 @@ main:
     url: /projects/
     weight: 50
   - name: CV
-    url: /uploads/Alfaj_Uddin_Ahmed_CV.pdf
+    url: /uploads/alfaj-uddin-ahmed-cv.pdf
     weight: 60
   - name: Contact
     url: /#contact
