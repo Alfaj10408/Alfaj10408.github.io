@@ -27,6 +27,8 @@ bio: |
 affiliations:
   - name: Weldon School of Biomedical Engineering, Purdue University
     url: https://engineering.purdue.edu/BME
+  - name: Elmore Family School of Electrical and Computer Engineering, Purdue University
+    url: https://engineering.purdue.edu/ECE
   - name: QBIS Lab
     url: https://engineering.purdue.edu/QBIS
 
@@ -62,14 +64,14 @@ interests:
 
 education:
   - degree: Ph.D. in Biomedical Engineering
-    institution: Purdue University, West Lafayette, IN
+    institution: Weldon School of Biomedical Engineering, Purdue University, West Lafayette, IN
     year: 2025 – present
     start: 2025-08-01
     summary: |
       Computational medical imaging and machine learning. Leslie A. Geddes Fellow.
       Dissertation area: ML for pediatric fracture and abuse detection from radiographs; LLM and VLM reliability.
   - degree: M.S. in Electrical and Computer Engineering
-    institution: Purdue University, West Lafayette, IN
+    institution: Elmore Family School of Electrical and Computer Engineering, Purdue University, West Lafayette, IN
     year: 2026 – present
     start: 2026-08-01
     summary: |
