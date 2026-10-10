@@ -1,5 +1,5 @@
 ---
-title: 'Why Models See Mirages: An Evidence-Starvation Theory of Ungrounded Multimodal Reasoning, and TIDE, a Training Objective That Provably Removes It'
+title: 'Teaching Vision-Language Models to Decline: Support Completion Against Mirage'
 authors:
   - me
   - et al.
