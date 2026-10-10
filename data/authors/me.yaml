@@ -108,6 +108,10 @@ experience:
     summary: |
       - Trained reward models and applied preference optimization to align generative outputs with human-rated quality; designed LLM-orchestrated workflows routing a request across several generative models.
       - Engineered image-to-3D reconstruction pipelines on Stable Diffusion and ControlNet, deployed at dev-ai-mesh.ideeza.com, with automated quality control scored by FID, SSIM, and LPIPS.
+      - Built 3D model generation pipelines on the current state-of-the-art generative 3D models, including TRELLIS, Hunyuan3D, PartSLIP, and PartPacker, producing part-aware 3D assets for downstream design workflows.
+      - Developed PCB placement and part placement inside 3D host models, positioning boards and components within the target geometry.
+      - Designed agentic, LLM-driven procedural 3D modeling that generates CAD-ready outputs from specifications: STEP, STL, and GLB files and OpenSCAD code.
+      - Implemented 3D segmentation, partitioning, and assembly of generated models into part hierarchies.
   - role: Research Engineer — AI Systems
     org: RadAssist
     start: 2022-05-01
