@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>TIDE Progress Update</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+*{box-sizing:border-box} body{margin:0} img{max-width:100%}
+
+/* Layout: one reading column (report), figures full column width, status board as a compact table. */
+:root{
+  --bg:#f7f8f6; --surface:#ffffff; --fg:#1d2321; --muted:#5c6763; --rule:#d9dedb; --accent:#0d7a5f;
+  --c-base:#8a8f8c; --c-gr:#d18a00; --c-csg:#3c93cf; --c-tide:#0d8a68; --c-prompt:#b24a8a; --c-var:#6d6aa8;
+  --ok:#1f7a4a; --run:#2a68b0; --plan:#7a6a2a; --block:#b0412f;
+  --serif:"IBM Plex Serif",Georgia,serif; --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141917; --surface:#1b2220; --fg:#e4e9e6; --muted:#9aa5a0; --rule:#2f3835; --accent:#4cc39d;
+  --c-base:#9aa09d; --c-gr:#e8a52c; --c-csg:#64aee0; --c-tide:#3cc497; --c-prompt:#d278b0; --c-var:#9d9ae0;
+  --ok:#55c48a; --run:#6ea3e6; --plan:#cdb866; --block:#ec7b67; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141917; --surface:#1b2220; --fg:#e4e9e6; --muted:#9aa5a0; --rule:#2f3835; --accent:#4cc39d;
+  --c-base:#9aa09d; --c-gr:#e8a52c; --c-csg:#64aee0; --c-tide:#3cc497; --c-prompt:#d278b0; --c-var:#9d9ae0;
+  --ok:#55c48a; --run:#6ea3e6; --plan:#cdb866; --block:#ec7b67; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.55}
+.wrap{max-width:880px;margin:0 auto;padding-block:40px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--serif);text-wrap:balance;line-height:1.25;margin:0}
+h1{font-size:2rem;font-weight:600}
+h2{font-size:1.35rem;font-weight:600;margin-top:2.6rem;padding-top:1.2rem;border-top:1px solid var(--rule)}
+h3{font-size:1.05rem;font-weight:600;margin-top:1.8rem}
+p{margin:.7rem 0;max-width:68ch}
+.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9rem;margin-top:.4rem}
+.lead{font-size:1.05rem}
+ul.tight{margin:.6rem 0;padding-left:1.2rem;max-width:68ch}
+ul.tight li{margin:.3rem 0}
+figure{margin:1.4rem 0;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:16px}
+figcaption{font-size:.86rem;color:var(--muted);margin-top:.6rem;max-width:72ch}
+figcaption b{color:var(--fg);font-weight:600}
+.chart{width:100%;overflow-x:auto}
+.chart svg{display:block;max-width:100%;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.82rem;margin-bottom:8px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:2px;display:inline-block}
+.tbl{overflow-x:auto;margin:1rem 0}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:.78rem;letter-spacing:.03em;text-transform:uppercase}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill{display:inline-block;font-family:var(--mono);font-size:.72rem;padding:2px 7px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.ok{color:var(--ok)} .run{color:var(--run)} .plan{color:var(--plan)} .block{color:var(--block)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:1.4rem 0}
+.kpi{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:12px 14px;min-width:0}
+.kpi .v{font-family:var(--mono);font-size:1.45rem;font-weight:500}
+.kpi .l{font-size:.82rem;color:var(--muted)}
+.note{font-size:.86rem;color:var(--muted)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:640px){.two{grid-template-columns:1fr} h1{font-size:1.6rem}}
+code{font-family:var(--mono);font-size:.85em}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="eyebrow">TIDE / MIRAGE study · progress update · 30 October 2026</div>
+<h1>TIDE progress update</h1>
+<p class="meta">Prepared for the supervisor meeting. Every number comes from a stored result file in the repository (branch <code>ablations-v5</code>). Lower mirage rate is better throughout.</p>
+
+<p class="lead">In short: TIDE (Grounding then C-Safety) cuts the image-aware mirage rate on the frozen v5 TEST tier for all six model families judged so far, from 0.45 to 0.71 at baseline to 0.06 to 0.18. The ablation campaign shows the gain needs image-conditioned counterfactual supervision, holds up across training recipes and rewording, and costs false abstention on real images. That cost is the main open issue.</p>
+
+<div class="kpis">
+  <div class="kpi"><div class="v">6 / 6</div><div class="l">model families where TIDE beats the base model (TEST, image-aware judge)</div></div>
+  <div class="kpi"><div class="v">0.055 to 0.181</div><div class="l">TIDE mirage rate, against 0.450 to 0.707 for the base models</div></div>
+  <div class="kpi"><div class="v">18</div><div class="l">ablations finished with results; 2 running, 2 planned</div></div>
+  <div class="kpi"><div class="v">$9 of $400</div><div class="l">API budget spent so far (cap raised 30 Oct for I03 and F04)</div></div>
+</div>
+
+<h2>1. Main result: TIDE across model families</h2>
+<p>Frozen v5 TEST tier, 3,000 invalid-evidence rows per cell (blank, in-domain unrelated, out-of-domain unrelated images). Judge: image-aware Rule B with gpt-5.5. Bars show the pooled image-aware mirage rate.</p>
+<figure>
+  <div class="legend" id="lg1"></div>
+  <div class="chart" id="fig1"></div>
+  <figcaption><b>Figure 1.</b> TIDE (green) has the lowest or near-lowest mirage rate on every model. Training order matters. C-Safety then Grounding (blue) fails on the Qwen models (0.55 to 0.61, worse than base) but is strongest on InternVL3 (0.096) and LLaVA-NeXT. Grounding with the support gate (orange) mostly removes blank-image mirages but leaves in-domain ones. The three Qwen2.5-VL bars share one base model because the stock model is seed-independent.</figcaption>
+</figure>
+<div class="tbl"><table>
+<thead><tr><th>Model</th><th class="n">Base</th><th class="n">Grounding + gate</th><th class="n">C-Safety → Grounding</th><th class="n">TIDE</th></tr></thead>
+<tbody id="t1"></tbody></table></div>
+
+<h2>2. What the ablations show (Qwen2.5-VL-7B, seed 2, EVAL tier)</h2>
+<p>The ablations run on the 500-group EVAL tier (2,000 rows), judged with the response-only judge U plus real-image accuracy. TEST was never used for them.</p>
+
+<h3>2.1 The safety trade-off</h3>
+<figure>
+  <div class="legend" id="lg2"></div>
+  <div class="two">
+    <div class="chart" id="fig2a"></div>
+    <div class="chart" id="fig2b"></div>
+  </div>
+  <figcaption><b>Figure 2.</b> Mirage rate against false abstention on real images. Left: all conditions. Right: zoom on the trained recipe variants. Prompting alone can match TIDE's mirage rate, but only by refusing 40 to 73% of answerable questions. Training on generic refusals (A5) or on real images only (CS0) does not reduce mirages. Every recipe variant lands on one curve. Pushing toward declining gives a lower mirage rate and more false abstention; pushing toward answering does the reverse.</figcaption>
+</figure>
+<ul class="tight">
+  <li><b>Image-conditioned supervision is necessary (A5).</b> Training on generic refusals over the real image gives 0.793, against 0.064 for C-Safety. The model has to learn from counterfactual images.</li>
+  <li><b>Choice of negatives does not matter much (A6, A7).</b> Random negatives (0.065) and a shared decline target (0.059) match the production recipe (0.064).</li>
+  <li><b>The recipe is robust (B12 to B06).</b> Training length, LoRA rank, learning rate, decline wording and counterfactual mix all keep the mirage rate between 0.041 and 0.111. Three different settings (1,600 steps, rank 16, a 1:1:2 counterfactual mix) reach the base model's false-abstention level (about 0.08) at a mirage rate of about 0.10. These EVAL results are descriptive, so no setting is selected from them.</li>
+  <li><b>Decline wording has no measurable effect (B11).</b> Five decline templates perform the same as one.</li>
+</ul>
+
+<h3>2.2 Does abstention track missing evidence? (C10 / I04)</h3>
+<figure>
+  <div class="legend" id="lg3"></div>
+  <div class="two">
+    <div class="chart" id="fig3a"></div>
+    <div class="chart" id="fig3b"></div>
+  </div>
+  <figcaption><b>Figure 3.</b> Abstention on real, answerable images as they are blurred (left) or occluded (right). The trained models' abstention rises steadily with evidence loss and far faster than the base model's, meeting the pre-registered reading rule. C-Safety keeps its accuracy on the questions it still answers (0.59 to 0.65), so it mostly declines what it would get wrong. The cost is visible at zero perturbation: 22 to 29% abstention on clean real images, against 10% for the base model.</figcaption>
+</figure>
+
+<h3>2.3 Robustness to question rewording (C09)</h3>
+<figure>
+  <div class="legend" id="lg4"></div>
+  <div class="chart" id="fig4"></div>
+  <figcaption><b>Figure 4.</b> How often the decide-to-answer-or-decline choice matches the original prompt after rewording (v1: polite prefix; v2: "use the image" suffix; v3: one word-level rewrite). Trained models keep 97 to 99% of their decisions, the base model 80 to 90%. The v1 prefix makes the trained models slightly more cautious (false abstention +0.04 to +0.05).</figcaption>
+</figure>
+
+<h3>2.4 External checks and mechanism</h3>
+<div class="tbl"><table>
+<thead><tr><th>Check</th><th>Result</th><th>Reading</th></tr></thead>
+<tbody>
+<tr><td>MMStar external transfer (G2)</td><td class="n">TIDE 0.058 vs base 0.791</td><td>Strong transfer to an unseen benchmark with accuracy preserved; only 2.3 points better than C-Safety alone.</td></tr>
+<tr><td>HallusionBench (deterministic proxy labels)</td><td class="n">qAcc base .374, TIDE .352, C-Safety .275</td><td>No trained cell beats the base model. TIDE loses the least (qAcc difference not significant, aAcc -0.036); C-Safety alone and the other orders lose more. Labels are a proxy, not GPT-4 official scoring.</td></tr>
+<tr><td>Hidden-state probes (H-REPR)</td><td class="n">AUROC base .83, Grounding .91, C-Safety .93, TIDE .92</td><td>Training makes "is this evidence valid" linearly readable in the decision state. Image-token features stay weak (0.53 to 0.69).</td></tr>
+<tr><td>Visual swap</td><td class="n">base changes answer in 87% of swaps</td><td>The base model answers about whatever image it is given and declines in only 1% of swaps.</td></tr>
+<tr><td>Support-gate features (night campaign)</td><td>gain is blank-only</td><td>The gate separates canonical blanks perfectly but carries little in-domain signal.</td></tr>
+</tbody></table></div>
+
+<h2>3. Status board</h2>
+<div class="tbl"><table>
+<thead><tr><th>Experiment</th><th>Status</th><th>Where</th><th>Headline or next step</th></tr></thead>
+<tbody id="t2"></tbody></table></div>
+
+<h2>4. Plan for the next two weeks</h2>
+<ul class="tight">
+  <li><b>Finish I03 (prompt pressure).</b> Run the frozen Mirage Stress V1 prompts on the four seed-0 cells (12 runs on EVAL), judge them with Rule B and report the change in mirage rate under pressure. Generation is queued on Kailash; judging costs about $220 to $250.</li>
+  <li><b>F04 (image-input judge).</b> Re-judge 3,000 invalid EVAL rows with gpt-5.5 seeing the image itself instead of captions, and measure agreement with the caption-based judge (about $130). This validates the judge behind every headline number.</li>
+  <li><b>Close K05 (quantisation).</b> Whether int8 and 4-bit inference keep the effect. Generation is almost done; judging is automatic.</li>
+  <li><b>Remaining model families.</b> Image-aware judging for Pixtral-12B and Gemma-3-12B, and Llama-3.2-11B after its v6 recertification.</li>
+  <li><b>Proposed, needs approval: seed replication.</b> Every recipe finding comes from seed 2 alone. Rerunning C-Safety and three points on the trade-off curve with seeds 0 and 1 would take about 10 GPU runs on Kailash and about $6 of judging.</li>
+</ul>
+
+<h2>5. Decisions needed</h2>
+<div class="tbl"><table>
+<thead><tr><th>Item</th><th>Question</th><th>Options</th></tr></thead>
+<tbody>
+<tr><td>False-abstention cost</td><td>How to present the safety trade-off in the paper</td><td>Report the curve as is, or add a lower-abstention operating point. Picking a point needs a fresh split, because EVAL results are descriptive only.</td></tr>
+<tr><td>C01 leave-one-domain-out</td><td>The held-out domain still leaks through out-of-domain counterfactual images (121 to 477 groups per domain)</td><td>Drop those examples, or redraw their images from other domains. Either option changes the training construction.</td></tr>
+<tr><td>Seed replication</td><td>Approve about 10 Kailash runs and about $6 of judging?</td><td>Yes / no</td></tr>
+<tr><td>H05, F01</td><td>RAPT probe protocol to port; human labels for the judge audit</td><td>Assign owner, or defer to future work</td></tr>
+</tbody></table></div>
+
+<p class="note" style="margin-top:2rem">Terms. <b>Mirage</b>: a substantive answer to a question whose image is blank or unrelated. <b>I-MR</b>: mirages over invalid-evidence rows. <b>False abstention</b>: declining on a real, answerable image. <b>TIDE</b>: the final method, Grounding then C-Safety. Research-extension results (Section 2) are kept separate from main-paper claims; seed 2 only unless stated.</p>
+</div>
+
+<script>
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const NS="http://www.w3.org/2000/svg";
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+function txt(p,x,y,s,a){const t=el("text",Object.assign({x,y,fill:css("--muted"),"font-size":11,"font-family":css("--sans")},a||{}),p);t.textContent=s;return t}
+function legend(id,items){document.getElementById(id).innerHTML=items.map(([l,c,shape])=>`<span><i style="background:var(${c});${shape==="o"?"border-radius:50%":""}"></i>${l}</span>`).join("")}
+
+// ---- data (from IMAGE_AWARE_RULE_B_COMBINED.md and the research_extension_v5 / ablation reports)
+const CELLS=[["Base","--c-base"],["Grounding + gate","--c-gr"],["C-Safety → Grounding","--c-csg"],["TIDE (Grounding → C-Safety)","--c-tide"]];
+const IAMR=[["Qwen2.5-VL 7B s1",[.450,.173,.561,.055]],["Qwen2.5-VL 7B s2",[.450,.204,.576,.058]],["Qwen2.5-VL 7B s3",[.450,.150,.554,.121]],
+  ["Aya Vision 8B",[.681,.445,.446,.181]],["Qwen2-VL 7B",[.699,.158,.607,.118]],["InternVL3 8B",[.707,.332,.096,.135]],["LLaVA-NeXT 7B",[.494,.230,.166,.153]]];
+const PTS=[ // [label, false abstention, I-MR, group]
+ ["Base",.088,.741,"base"],["Real-only SFT (CS0)",.000,1.000,"base"],["Generic refusal (A5)",.004,.793,"base"],
+ ["Prompt: abstain (E03)",.402,.119,"prompt"],["Prompt: self-classify (E02)",.726,.013,"prompt"],
+ ["C-Safety (CS5)",.222,.064,"prod"],["TIDE",.292,.061,"prod"],
+ ["A6 random neg.",.240,.065,"var"],["A7 shared target",.245,.059,"var"],
+ ["200 steps",.204,.081,"var"],["400 steps",.274,.059,"var"],["1600 steps",.078,.111,"var"],
+ ["rank 4",.194,.072,"var"],["rank 16",.090,.105,"var"],["rank 32",.112,.100,"var"],
+ ["lr 3e-5",.386,.041,"var"],["lr 3e-4",.170,.077,"var"],["5 templates",.198,.070,"var"],
+ ["mix 2:1:1",.150,.081,"var"],["mix 1:2:1",.180,.072,"var"],["mix 1:1:2",.084,.111,"var"]];
+const GC={base:"--c-base",prompt:"--c-prompt",prod:"--c-tide",var:"--c-var"};
+const C10={blur:["none","σ2","σ4","σ8"],occ:["none","25%","50%","75%"],
+  E0:{blur:[.098,.086,.130,.274],occ:[.098,.132,.190,.258]},CS5:{blur:[.222,.268,.438,.748],occ:[.222,.416,.632,.756]},TIDE:{blur:[.292,.324,.408,.630],occ:[.292,.390,.514,.674]}};
+const C09={Base:[.798,.799,.903],"C-Safety":[.968,.973,.993],TIDE:[.971,.971,.991]};
+
+function axisY(g,x0,x1,y,ymax,ticks,fmt){ticks.forEach(t=>{const yy=y(t);el("line",{x1:x0,x2:x1,y1:yy,y2:yy,stroke:css("--rule"),"stroke-width":1},g);txt(g,x0-6,yy+4,fmt(t),{"text-anchor":"end"})})}
+
+function fig1(){
+  const W=820,H=300,m={l:44,r:8,t:10,b:44},iw=W-m.l-m.r,ih=H-m.t-m.b,s=el("svg",{viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":"Image-aware mirage rate by model and cell"});
+  const y=v=>m.t+ih-v/0.8*ih; axisY(s,m.l,W-m.r,y,.8,[0,.2,.4,.6,.8],v=>v.toFixed(1));
+  const gw=iw/IAMR.length,bw=Math.min(18,(gw-14)/4);
+  IAMR.forEach(([name,v],i)=>{const cx=m.l+gw*i+gw/2;v.forEach((val,j)=>{const x=cx-2*bw+j*bw;el("rect",{x,y:y(val),width:bw-2,height:y(0)-y(val),fill:css(CELLS[j][1])},s).appendChild(el("title",{})).textContent=`${name}, ${CELLS[j][0]}: ${val.toFixed(3)}`});
+    const parts=name.split(" ");txt(s,cx,H-26,parts.slice(0,-1).join(" "),{"text-anchor":"middle",fill:css("--fg")});txt(s,cx,H-12,parts.at(-1),{"text-anchor":"middle"})});
+  el("text",{x:12,y:m.t+ih/2,transform:`rotate(-90 12 ${m.t+ih/2})`,"text-anchor":"middle",fill:css("--muted"),"font-size":11},s).textContent="image-aware I-MR";
+  document.getElementById("fig1").replaceChildren(s);
+  document.getElementById("t1").innerHTML=IAMR.map(([n,v])=>{const mn=Math.min(...v);return `<tr><td>${n}</td>${v.map(x=>`<td class="n"${x===mn?' style="font-weight:600;color:var(--c-tide)"':""}>${x.toFixed(3)}</td>`).join("")}</tr>`}).join("");
+}
+
+function scatter(id,pts,xr,yr,labels,size){
+  const W=size||400,H=300,m={l:44,r:12,t:12,b:38},iw=W-m.l-m.r,ih=H-m.t-m.b,s=el("svg",{viewBox:`0 0 ${W} ${H}`,role:"img"});
+  const x=v=>m.l+(v-xr[0])/(xr[1]-xr[0])*iw,y=v=>m.t+ih-(v-yr[0])/(yr[1]-yr[0])*ih;
+  const yt=[],xt=[];for(let i=0;i<=4;i++){yt.push(yr[0]+(yr[1]-yr[0])*i/4);xt.push(xr[0]+(xr[1]-xr[0])*i/4)}
+  axisY(s,m.l,W-m.r,y,yr[1],yt,v=>v.toFixed(2));
+  xt.forEach(t=>txt(s,x(t),H-m.b+16,t.toFixed(2),{"text-anchor":"middle"}));
+  txt(s,m.l+iw/2,H-4,"false abstention on real images",{"text-anchor":"middle"});
+  el("text",{x:11,y:m.t+ih/2,transform:`rotate(-90 11 ${m.t+ih/2})`,"text-anchor":"middle",fill:css("--muted"),"font-size":11},s).textContent="I-MR (judge U)";
+  pts.forEach(([l,fa,im,g])=>{if(fa<xr[0]||fa>xr[1]||im<yr[0]||im>yr[1])return;const c=el("circle",{cx:x(fa),cy:y(im),r:g==="prod"?6:4.5,fill:css(GC[g]),stroke:css("--surface"),"stroke-width":1.2},s);el("title",{},c).textContent=`${l}: I-MR ${im.toFixed(3)}, false abstention ${fa.toFixed(3)}`;
+    if(labels.includes(l)){const right=x(fa)<m.l+iw*0.62;txt(s,x(fa)+(right?8:-8),y(im)+4,l,{"text-anchor":right?"start":"end",fill:css("--fg"),"font-size":10.5})}});
+  document.getElementById(id).replaceChildren(s);
+}
+
+function lines(id,kind,title){
+  const W=400,H=260,m={l:44,r:56,t:22,b:34},iw=W-m.l-m.r,ih=H-m.t-m.b,s=el("svg",{viewBox:`0 0 ${W} ${H}`,role:"img"});
+  const n=C10[kind].length,x=i=>m.l+i/(n-1)*iw,y=v=>m.t+ih-v*ih;
+  axisY(s,m.l,W-m.r,y,1,[0,.25,.5,.75,1],v=>v.toFixed(2));
+  C10[kind].forEach((t,i)=>txt(s,x(i),H-m.b+16,t,{"text-anchor":"middle"}));
+  txt(s,m.l,14,title,{fill:css("--fg"),"font-weight":600});
+  [["E0","--c-base","Base"],["CS5","--c-var","C-Safety"],["TIDE","--c-tide","TIDE"]].forEach(([k,c,lab])=>{const v=C10[k][kind];
+    el("polyline",{points:v.map((d,i)=>`${x(i)},${y(d)}`).join(" "),fill:"none",stroke:css(c),"stroke-width":2.2},s);
+    v.forEach((d,i)=>el("circle",{cx:x(i),cy:y(d),r:3.2,fill:css(c)},s).appendChild(el("title",{})).textContent=`${lab} ${C10[kind][i]}: ${d.toFixed(3)}`);
+    txt(s,x(n-1)+7,y(v[n-1])+4,v[n-1].toFixed(2),{fill:css(c),"font-family":css("--mono")})});
+  el("text",{x:11,y:m.t+ih/2,transform:`rotate(-90 11 ${m.t+ih/2})`,"text-anchor":"middle",fill:css("--muted"),"font-size":11},s).textContent="abstention rate";
+  document.getElementById(id).replaceChildren(s);
+}
+
+function fig4(){
+  const W=820,H=210,m={l:120,r:56,t:8,b:28},iw=W-m.l-m.r,s=el("svg",{viewBox:`0 0 ${W} ${H}`,role:"img"});
+  const x=v=>m.l+(v-.7)/.3*iw,rows=Object.keys(C09),rh=(H-m.t-m.b)/rows.length,cols=["--c-base","--c-var","--c-tide"],vn=["v1 prefix","v2 suffix","v3 rewrite"];
+  [.7,.8,.9,1].forEach(t=>{el("line",{x1:x(t),x2:x(t),y1:m.t,y2:H-m.b,stroke:css("--rule")},s);txt(s,x(t),H-8,t.toFixed(1),{"text-anchor":"middle"})});
+  rows.forEach((r,i)=>{const y0=m.t+i*rh;txt(s,m.l-10,y0+rh/2+4,r,{"text-anchor":"end",fill:css("--fg")});
+    C09[r].forEach((v,j)=>{const bh=(rh-14)/3,yy=y0+6+j*bh;el("rect",{x:m.l,y:yy,width:x(v)-m.l,height:bh-3,fill:css(cols[i]),opacity:(1-j*0.22).toString()},s).appendChild(el("title",{})).textContent=`${r} ${vn[j]}: ${v.toFixed(3)}`;
+      txt(s,x(v)+5,yy+bh-5,`${v.toFixed(3)}  ${vn[j]}`,{"font-family":css("--mono"),"font-size":10})})});
+  document.getElementById("fig4").replaceChildren(s);
+}
+
+const STATUS=[
+ ["Multi-model TIDE, 6 families (TEST, Rule B)","ok","lab PC + Kailash + Arid","TIDE 0.055 to 0.181 vs base 0.450 to 0.707"],
+ ["Pixtral-12B, Gemma-3-12B","run","imported","judge U done; image-aware Rule B pending"],
+ ["Llama-3.2-11B (cross-attention)","run","Kailash","v6 lock recertification after a gate-feature fix"],
+ ["Seed-2 gate and C-Safety condition ladder","ok","lab PC","gate gain is blank-only"],
+ ["A5 generic refusal / A6 random negatives / A7 shared target","ok","lab PC","0.793 / 0.065 / 0.059 vs CS5 0.064"],
+ ["In-domain hardness, visual swap","ok","lab PC","residual mirages rise with visual similarity (domain-confounded)"],
+ ["G2 MMStar external transfer","ok","lab PC","TIDE 0.058 vs base 0.791"],
+ ["HallusionBench v5 (proxy labels)","ok","lab PC","no trained cell beats base; TIDE closest"],
+ ["E02 / E03 prompt-only baselines","ok","lab PC","match TIDE's I-MR only at 40 to 73% false abstention"],
+ ["H-REPR hidden-state probes and CKA","ok","lab PC","decision-state AUROC .83 → .92"],
+ ["C10 / I04 graded perturbation","ok","lab PC","abstention tracks evidence loss (pre-registered rule met)"],
+ ["B12 training length","ok","Kailash","robust; 1,600 steps trades I-MR for lower abstention"],
+ ["B13 LoRA rank, B14 learning rate","ok","Kailash","one trade-off curve"],
+ ["B11 decline templates, B06 counterfactual mix","ok","Kailash","wording no effect; more OD lowers abstention"],
+ ["C09 question rewording","ok","lab PC + Kailash","97 to 99% decision agreement (base 80 to 90%)"],
+ ["K05 int8 / 4-bit inference","run","lab PC","last generation finishing; judge and analysis automatic"],
+ ["I03 Mirage Stress prompts (12 runs)","run","Kailash","protocol frozen fd3caa8e; jobs queued"],
+ ["F04 image-input judge vs caption judge","plan","lab PC","spec to freeze before any paid call"],
+ ["Seed replication of the trade-off curve","plan","Kailash","needs approval"],
+ ["C01 leave-one-domain-out","block","","leakage audit failed; construction decision needed"],
+ ["H05 RAPT probe, F01 human labels","block","","protocol port / labelling owner needed"]];
+const PILL={ok:"done",run:"running",plan:"planned",block:"blocked"};
+
+function render(){
+  legend("lg1",CELLS.map(([l,c])=>[l,c]));
+  legend("lg2",[["Base and non-counterfactual training","--c-base","o"],["Prompt only","--c-prompt","o"],["Production C-Safety and TIDE","--c-tide","o"],["Recipe variants","--c-var","o"]]);
+  legend("lg3",[["Base","--c-base"],["C-Safety","--c-var"],["TIDE","--c-tide"]]);
+  legend("lg4",[["Base","--c-base"],["C-Safety","--c-var"],["TIDE","--c-tide"]]);
+  fig1();
+  scatter("fig2a",PTS,[0,.8],[0,1],["Base","Real-only SFT (CS0)","Generic refusal (A5)","Prompt: abstain (E03)","Prompt: self-classify (E02)","TIDE"]);
+  scatter("fig2b",PTS,[.05,.41],[.03,.12],["C-Safety (CS5)","TIDE","1600 steps","rank 16","mix 1:1:2","lr 3e-5","400 steps","lr 3e-4"]);
+  lines("fig3a","blur","Gaussian blur");lines("fig3b","occ","Grey occlusion (share of image)");
+  fig4();
+  document.getElementById("t2").innerHTML=STATUS.map(([e,s,w,h])=>`<tr><td>${e}</td><td><span class="pill ${s}">${PILL[s]}</span></td><td>${w}</td><td>${h}</td></tr>`).join("");
+}
+render();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",render);
+new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+</script>
+</body>
+</html>
