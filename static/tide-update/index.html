@@ -40,6 +40,7 @@ figure{margin:1.4rem 0;background:var(--surface);border:1px solid var(--rule);bo
 figcaption{font-size:.86rem;color:var(--muted);margin-top:.6rem;max-width:72ch}
 figcaption b{color:var(--fg);font-weight:600}
 .chart{width:100%;overflow-x:auto}
+img.fig{display:block;width:100%;height:auto;border-radius:4px;background:#fff}
 .chart svg{display:block;max-width:100%;height:auto}
 .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.82rem;margin-bottom:8px;color:var(--muted)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
@@ -104,8 +105,7 @@ code{font-family:var(--mono);font-size:.85em}
 <h2>1. Main result: TIDE across model families</h2>
 <p>Frozen v5 TEST tier, 3,000 invalid-evidence rows per cell (blank, in-domain unrelated, out-of-domain unrelated images). Judge: image-aware Rule B with gpt-5.5. Bars show the pooled image-aware mirage rate.</p>
 <figure>
-  <div class="legend" id="lg1"></div>
-  <div class="chart" id="fig1"></div>
+  <img src="figs/f1_multimodel.png" alt="Image-aware mirage rate by model and cell" loading="lazy" class="fig">
   <figcaption><b>Figure 1.</b> TIDE (green) has the lowest or near-lowest mirage rate on every model. Training order matters. C-Safety then Grounding (blue) fails on the Qwen models (0.55 to 0.61, worse than base) but is strongest on InternVL3 (0.096) and LLaVA-NeXT. Grounding with the support gate (orange) mostly removes blank-image mirages but leaves in-domain ones. The three Qwen2.5-VL bars share one base model because the stock model is seed-independent.</figcaption>
 </figure>
 <div class="tbl"><table>
@@ -126,53 +126,57 @@ code{font-family:var(--mono);font-size:.85em}
 <li><b>Hyp. 19, C-Safety alone keeps general accuracy on HallusionBench:</b> fails its margin. Question accuracy falls by 0.099.</li>
 </ul>
 
-<h2>3. What the ablations show (Qwen2.5-VL-7B, seed 2, EVAL tier)</h2>
-<p>The ablations run on the 500-group EVAL tier (2,000 rows), judged with the response-only judge U plus real-image accuracy. TEST was never used for them.</p>
+<h2>3. What the ablations show</h2>
+<p>All ablations use Qwen2.5-VL-7B. Training ablations use seed 2 on the 500-group EVAL tier (2,000 rows), judged with the response-only judge U plus real-image accuracy; the external benchmarks use the seed-0 cells. TEST was never used for an ablation. Each subsection names the hypothesis it tests (Section 2).</p>
 
-<h3>3.1 The safety trade-off</h3>
-<figure>
-  <div class="legend" id="lg2"></div>
-  <div class="two">
-    <div class="chart" id="fig2a"></div>
-    <div class="chart" id="fig2b"></div>
-  </div>
-  <figcaption><b>Figure 2.</b> Mirage rate against false abstention on real images. Left: all conditions. Right: zoom on the trained recipe variants. Prompting alone can match TIDE's mirage rate, but only by refusing 40 to 73% of answerable questions. Generic refusal training (A5) and real-images-only training (CS0) do not reduce mirages. Every recipe variant lands on one curve. Pushing toward declining gives a lower mirage rate and more false abstention; pushing toward answering does the reverse.</figcaption>
-</figure>
-<ul class="tight">
-  <li><b>Image-conditioned supervision is necessary (A5, generic refusal training).</b> Training on generic refusals over the real image gives 0.793, against 0.064 for C-Safety. The model has to learn from counterfactual images.</li>
-  <li><b>Choice of negatives does not matter much (A6, random negatives; A7, shared decline sentence).</b> Random negatives (0.065) and a shared decline target (0.059) match the production recipe (0.064).</li>
-  <li><b>The recipe is robust (roadmap B12 training length, B13 LoRA rank, B14 learning rate, B11 decline templates, B06 counterfactual mix).</b> Training length, LoRA rank, learning rate, decline wording and counterfactual mix all keep the mirage rate between 0.041 and 0.111. Three different settings (1,600 steps, rank 16, a 1:1:2 counterfactual mix) reach the base model's false-abstention level (about 0.08) at a mirage rate of about 0.10. These EVAL results are descriptive, so no setting is selected from them.</li>
-  <li><b>Decline wording has no measurable effect (B11, decline-template diversity).</b> Five decline templates perform the same as one.</li>
-</ul>
+<h3>3.1 Which counterfactual examples does C-Safety need? (C-Safety training ladder, roadmap B01 to B04)</h3>
+<figure><img src="figs/f3_ladder.png" alt="Mirage rate per image role for the C-Safety training ladder" loading="lazy" class="fig">
+<figcaption><b>Figure 2.</b> Mirage rate per invalid-image role (bars) and false abstention on real images (diamonds) as counterfactual kinds are added to C-Safety training. Real-only training (CS0) makes every role worse. Blank examples (CS1) fix blanks only (Hyp. 8, supported). In-domain wrong images are needed to suppress in-domain mirage (CS2, CS4, CS5; Hyp. 9, supported). Removing blanks from the full set (CS4) costs mainly the blank role (Hyp. 10, supported).</figcaption></figure>
 
-<h3>3.2 Does abstention track missing evidence? (roadmap C10 image perturbation severity / I04 corruption and occlusion)</h3>
-<figure>
-  <div class="legend" id="lg3"></div>
-  <div class="two">
-    <div class="chart" id="fig3a"></div>
-    <div class="chart" id="fig3b"></div>
-  </div>
-  <figcaption><b>Figure 3.</b> Abstention on real, answerable images as they are blurred (left) or occluded (right). The trained models' abstention rises steadily with evidence loss and far faster than the base model's, meeting the pre-registered reading rule. C-Safety keeps its accuracy on the questions it still answers (0.59 to 0.65), so it mostly declines what it would get wrong. The cost is visible at zero perturbation: 22 to 29% abstention on clean real images, against 10% for the base model.</figcaption>
-</figure>
+<h3>3.2 Is it the counterfactual images, or just learning to refuse? (A5, A6, A7; roadmap B07, B08, B05)</h3>
+<figure><img src="figs/f5_controls.png" alt="Mirage rate per role for generic refusal, random negatives and shared decline target" loading="lazy" class="fig">
+<figcaption><b>Figure 3.</b> Generic refusal training without counterfactual images (A5) leaves mirage at base level: the model must see the wrong image (Hyp. 6, supported). Random instead of structured negative images (A6) work just as well (Hyp. 7, contradicted). One shared decline sentence (A7) matches condition-specific ones (Hyp. 11, supported).</figcaption></figure>
 
-<h3>3.3 Robustness to question rewording (roadmap C09 question rephrasing)</h3>
-<figure>
-  <div class="legend" id="lg4"></div>
-  <div class="chart" id="fig4"></div>
-  <figcaption><b>Figure 4.</b> How often the decide-to-answer-or-decline choice matches the original prompt after rewording (v1: polite prefix; v2: "use the image" suffix; v3: one word-level rewrite). Trained models keep 97 to 99% of their decisions, the base model 80 to 90%. The v1 prefix makes the trained models slightly more cautious (false abstention +0.04 to +0.05).</figcaption>
-</figure>
+<h3>3.3 What makes the support gate work? (gate feature ablation, roadmap G01)</h3>
+<figure><img src="figs/f4_gate.png" alt="Pooled mirage rate against gate coverage for three gate feature sets" loading="lazy" class="fig">
+<figcaption><b>Figure 4.</b> Grounding alone raises mirage (0.877 vs base 0.741; Hyp. 2, supported). A gate on Grounding's support scores lowers it, but only the production head with the image-vs-blank similarity feature (G2) helps much, and almost all of that gain is on blank images. At 99% real coverage the gates lose most of their effect (Hyp. 3, mixed).</figcaption></figure>
 
-<h3>3.4 External checks, mechanism and cost</h3>
+<h3>3.4 The safety trade-off: trained models against prompting (roadmap E02, E03, G02)</h3>
+<figure><img src="figs/f2_tradeoff.png" alt="Mirage rate against false abstention for all conditions and recipe variants" loading="lazy" class="fig">
+<figcaption><b>Figure 5.</b> Mirage rate against false abstention on real images. Left: every condition. Prompting alone can match TIDE's mirage rate only by refusing 40 to 73% of answerable questions. Right: the 14 trained recipe variants (key on the right) lie on one line; changing the recipe moves the model along it rather than off it.</figcaption></figure>
+
+<h3>3.5 Is the recipe fragile? (roadmap B12 training length, B13 LoRA rank, B14 learning rate, B06 counterfactual mix, B11 decline templates)</h3>
+<figure><img src="figs/f6_recipe.png" alt="Mirage rate and false abstention across recipe settings" loading="lazy" class="fig">
+<figcaption><b>Figure 6.</b> Every setting keeps the mirage rate between 0.041 and 0.111 (base 0.741). Settings that push toward answering (1,600 steps, rank 16 or 32, more out-of-domain examples) bring false abstention down to the base level (about 0.08) at a mirage rate of about 0.10; a low learning rate does the reverse. These are descriptive EVAL results: no setting is selected from them.</figcaption></figure>
+
+<h3>3.6 Does abstention track missing evidence? (roadmap C10 perturbation severity / I04 corruption and occlusion)</h3>
+<figure><img src="figs/f7_perturbation.png" alt="Abstention as real images are blurred or occluded" loading="lazy" class="fig">
+<figcaption><b>Figure 7.</b> Abstention on real, answerable images as they are blurred or occluded. The trained models' abstention rises with evidence loss far faster than the base model's (pre-registered rule met). C-Safety keeps its accuracy on what it still answers (0.59 to 0.65). The cost shows at zero perturbation: 22 to 29% abstention on clean images, against 10% for the base model.</figcaption></figure>
+
+<h3>3.7 Is the decision stable under rewording? (roadmap C09 question rephrasing)</h3>
+<figure><img src="figs/f8_rewording.png" alt="Decision agreement under three rewordings" loading="lazy" class="fig">
+<figcaption><b>Figure 8.</b> Share of rows where the answer-or-decline decision matches the original prompt. Trained models keep 97 to 99% of decisions; the base model 80 to 90%. The polite prefix makes the trained models slightly more cautious (false abstention +0.04 to +0.05).</figcaption></figure>
+
+<h3>3.8 Does it survive quantised inference? (roadmap K05)</h3>
+<figure><img src="figs/f9_quant.png" alt="Mirage rate under bf16, int8 and 4-bit inference" loading="lazy" class="fig">
+<figcaption><b>Figure 9.</b> 8-bit and 4-bit inference change TIDE's mirage rate by at most 0.003 and C-Safety's by at most 0.008. The trained cells also run faster than the base model per row, because declines are short (roadmap K03: 0.11 to 0.42 of base time).</figcaption></figure>
+
+<h3>3.9 Where does the model encode "this evidence is invalid"? (roadmap H01 probes, H02 layer-wise separability, H06 CKA)</h3>
+<figure><img src="figs/f10_probes.png" alt="Probe AUROC by layer for each cell" loading="lazy" class="fig">
+<figcaption><b>Figure 10.</b> A linear probe on the decision-state hidden vector separates real from invalid images better after training (peak AUROC 0.83 base, 0.91 Grounding, 0.93 C-Safety, 0.92 TIDE), mostly in layers 14 to 27. Image-token features stay weak in every cell (0.53 to 0.69): training changes how the model decides, not what the vision tokens contain.</figcaption></figure>
+
+<h3>3.10 Does it transfer to other benchmarks? (study G2 MMStar; roadmap C02 / I01 HallusionBench)</h3>
+<figure><img src="figs/f11_external.png" alt="MMStar and HallusionBench results" loading="lazy" class="fig">
+<figcaption><b>Figure 11.</b> Left: on MMStar counterfactuals, TIDE cuts mirage from 0.790 to 0.058 with official accuracy unchanged (0.567 vs 0.563; Hyp. 12, supported); C-Safety alone is close (0.080). Right: on HallusionBench no trained cell beats the base model; TIDE loses least (qAcc difference not significant, Hyp. 15 inconclusive) and beats C-Safety alone and the reverse order (Hyp. 18, supported); C-Safety alone loses 0.099 qAcc (Hyp. 19). HallusionBench labels are a deterministic proxy, not GPT-4 official scoring.</figcaption></figure>
+
+<h3>3.11 Other checks</h3>
 <div class="tbl"><table>
 <thead><tr><th>Check</th><th>Result</th><th>Reading</th></tr></thead>
 <tbody>
-<tr><td>MMStar external transfer (study G2; partly covers roadmap C04)</td><td class="n">TIDE 0.058 vs base 0.791</td><td>Strong transfer to an unseen benchmark with accuracy preserved; only 2.3 points better than C-Safety alone.</td></tr>
-<tr><td>HallusionBench (roadmap C02 / I01; deterministic proxy labels)</td><td class="n">qAcc base .374, TIDE .352, C-Safety .275</td><td>No trained cell beats the base model. TIDE loses the least (qAcc difference not significant, aAcc -0.036); C-Safety alone and the other orders lose more. Labels are a proxy, not GPT-4 official scoring.</td></tr>
-<tr><td>Hidden-state probes (roadmap H01, H02, H06)</td><td class="n">AUROC base .83, Grounding .91, C-Safety .93, TIDE .92</td><td>Training makes "is this evidence valid" linearly readable in the decision state. Image-token features stay weak (0.53 to 0.69).</td></tr>
 <tr><td>Visual swap (roadmap B16)</td><td class="n">base changes answer in 87% of swaps</td><td>The base model answers about whatever image it is given and declines in only 1% of swaps.</td></tr>
-<tr><td>Quantised inference (roadmap K05)</td><td class="n">TIDE I-MR change at most 0.003</td><td>int8 and 4-bit inference keep the effect; C-Safety moves by at most 0.008.</td></tr>
-<tr><td>Inference cost (roadmap K03)</td><td class="n">0.11 to 0.42 of base time per row</td><td>No overhead: declines are short, so trained cells run faster than the base model.</td></tr>
-<tr><td>Support-gate feature ablation (night campaign)</td><td>gain is blank-only</td><td>The gate separates canonical blanks perfectly but carries little in-domain signal.</td></tr>
+<tr><td>In-domain hardness (roadmap C06)</td><td>trend, domain-confounded</td><td>Residual in-domain mirage rises with visual similarity of the wrong image, but domains differ in similarity, so this is not a clean effect.</td></tr>
+<tr><td>Gate calibration (roadmap G05)</td><td class="n">ECE 0.07, AUROC 0.92</td><td>The gate score is calibrated; it rejects all blanks but accepts 54 to 60% of in-domain wrong images.</td></tr>
+<tr><td>LoRA update structure (roadmap H07, H10, H11)</td><td class="n">effective rank about 2.6 of 8</td><td>Every C-Safety adapter makes a similar, low-rank change concentrated in layers 20 to 24.</td></tr>
 </tbody></table></div>
 
 <h2>4. All 112 planned experiments</h2>
@@ -302,15 +306,7 @@ function renderRoad(){const E=ROAD.entries,c={};E.forEach(x=>c[x.status]=(c[x.st
     return `<details class="grp" data-sec="${s}"${(open.has(s)||filt)?" open":""}><summary>${s}. ${name} <span class="cnt">${done} of ${all.length} done${filt?", "+rows.length+" shown":""}</span><span class="mini">${mini}</span></summary><div class="tbl" style="margin:0"><table><tbody>${rows.map(x=>`<tr><td class="n">${x.id}</td><td>${esc(x.title)}<div class="q">${esc(x.q)}</div></td><td><span class="pill" style="color:var(${RS[x.status][1]==="--rule"?"--muted":RS[x.status][1]})">${RS[x.status][0]}</span></td><td>${esc(x.note)}</td></tr>`).join("")}</tbody></table></div></details>`}).join("")}
 
 function render(){
-  legend("lg1",CELLS.map(([l,c])=>[l,c]));
-  legend("lg2",[["Base and non-counterfactual training","--c-base","o"],["Prompt only","--c-prompt","o"],["Production C-Safety and TIDE","--c-tide","o"],["Recipe variants","--c-var","o"]]);
-  legend("lg3",[["Base","--c-base"],["C-Safety","--c-var"],["TIDE","--c-tide"]]);
-  legend("lg4",[["Base","--c-base"],["C-Safety","--c-var"],["TIDE","--c-tide"]]);
-  fig1();
-  scatter("fig2a",PTS,[0,.8],[0,1],["Base","Real-only SFT (CS0)","Generic refusal (A5)","Prompt: abstain (E03)","Prompt: self-classify (E02)","TIDE"]);
-  scatter("fig2b",PTS,[.05,.41],[.03,.12],["C-Safety (CS5)","TIDE","1600 steps","rank 16","mix 1:1:2","lr 3e-5","400 steps","lr 3e-4"]);
-  lines("fig3a","blur","Gaussian blur");lines("fig3b","occ","Grey occlusion (share of image)");
-  fig4();
+  document.getElementById("t1").innerHTML=IAMR.map(([n,v])=>{const mn=Math.min(...v);return `<tr><td>${n}</td>${v.map(x=>`<td class="n"${x===mn?' style="font-weight:600;color:var(--c-tide)"':""}>${x.toFixed(3)}</td>`).join("")}</tr>`}).join("");
   renderClaims();renderRoad();
 }
 render();
