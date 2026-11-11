@@ -254,7 +254,7 @@ code{font-family:var(--mono);font-size:.85em}
 <tr><td>B09 Disjoint-support training</td><td>partial</td><td>Overlap count only (analysis), see 7.2</td></tr>
 <tr><td>B15 Adaptation location</td><td>partial</td><td>Report what exists (LM-side LoRA only); no new runs</td></tr>
 <tr><td>B17 Model scale under matched quantization</td><td>queued</td><td>32B and 72B stock and trained cells exist; add the scale row to the supplement from stored results (analysis only)</td></tr>
-<tr><td>C01 Leave-one-domain-out</td><td>dropped for CVPR</td><td>Stays dropped: the held-out domain leaks through out-of-domain counterfactuals; about 30 GPU-hours to do properly. Candidate for the next two days only if everything above lands early</td></tr>
+<tr><td>C01 Leave-one-domain-out</td><td><b>launched 10 November</b></td><td>Strict folds: the held-out domain's own train groups and every group whose wrong image comes from it are removed (2,199 to 2,748 train groups remain per fold; zero held-out images in any role). TIDE adapter trained per fold, held-out domain's 400 test rows generated; 10 domains x 3 seeds = 30 runs on the three Kailash H100s (runbook <code>CODEX_PROMPT_LODO_C01.md</code>); judged under both judges on the lab PC and compared with the production stock and full-recipe cells on the same rows</td></tr>
 <tr><td>C03 Unanswerable-VQA benchmark</td><td>dropped for CVPR</td><td>Stays dropped (no label-compatible protocol)</td></tr>
 <tr><td>C04 Unseen counterfactual mechanisms</td><td>partial</td><td>MMStar's different construction already serves; state it explicitly</td></tr>
 <tr><td>C07 Leave-one-model-out aggregate; C08 cross-architecture recipe generalisation</td><td>planned / partial</td><td>Analysis only from the 12-axis results (11 November)</td></tr>
