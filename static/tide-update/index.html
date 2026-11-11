@@ -80,6 +80,7 @@ code{font-family:var(--mono);font-size:.85em}
 <div class="wrap">
 <div class="eyebrow">TIDE / MIRAGE study · progress update · 30 October 2026</div>
 <h1>TIDE progress update</h1>
+<p class="meta"><b>Latest:</b> Section 7 (10 November 2026) lists the to-do list after the external review, the runs launched today and the disposition of every unfinished roadmap entry.</p>
 <p class="meta">Prepared for the supervisor meeting. Every number comes from a stored result file in the repository (branch <code>ablations-v5</code>). Lower mirage rate is better throughout.</p>
 
 <p class="lead">In short: TIDE (Grounding then C-Safety) cuts the image-aware mirage rate on the frozen v5 TEST tier for all seven model families judged (nine runs, counting three Qwen2.5-VL seeds), from 0.45 to 0.71 at baseline to 0.06 to 0.18. Pixtral-12B's numbers carry a judge-parsing caveat (Figure 1). Of the 19 pre-registered hypotheses, 12 are supported, 2 mixed, 3 inconclusive, 1 contradicted and 1 not yet testable (Section 2). Two results went against our expectations: random negatives work as well as structured ones (Hyp. 7, structured negatives are necessary), and TIDE does not beat C-Safety alone on Qwen (Hyp. 5, TIDE beats C-Safety alone). The main open issue is the false-abstention cost on real images.</p>
@@ -210,6 +211,73 @@ code{font-family:var(--mono);font-size:.85em}
 <tr><td>Pixtral-12B (and Idefics3-8B, being judged now) degenerate after Grounding</td><td>Report Pixtral as a flagged lower bound, or diagnose the Grounding merger on these architectures before the paper</td><td>Flag and move on, or open a diagnosis task</td></tr>
 <tr><td>Roadmap H05 (RAPT five-condition probe) and F01 (large held-out human audit)</td><td>The RAPT protocol has to be ported from the TC-LIA paper; the judge audit needs labels from two human annotators</td><td>Assign owner, or defer to future work</td></tr>
 </tbody></table></div>
+
+<h2 id="todo">7. To-do list after the external review (updated 10 November 2026)</h2>
+<p>The CVPR 2027 abstract was registered on 10 November with the <b>image-aware judge</b> as the headline instrument (formerly "rule B"; the response-only judge is now the <b>text-only judge</b>). The external agentic review recommends acceptance and asks for three things above all: human validation of the judges, stronger training baselines, and a clearer related-work placement. Full paper deadline: 16 November (AoE); supplementary: 23 November.</p>
+
+<h3>7.1 Runs launched or finished on 10 November</h3>
+<div class="tbl"><table>
+<thead><tr><th>Run</th><th>Why</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Image-aware judge on all 12 paper axes plus Qwen2.5-VL-32B and Qwen3-VL-8B (frozen v5 TEST, 4,000 rows per cell)</td><td>Headline numbers under the paper's own judge; removes "image-aware judge ran on a subset of axes"</td><td><b>Done.</b> Grounding then TIDE lowers the image-aware I-MR on all 12 axes (stock 0.450 to 0.882, trained 0.055 to 0.181); the text-only judge agrees on every axis</td></tr>
+<tr><td>Seed-0 reference cells re-judged on the v5 TEST (all five cells including the gated one)</td><td>Seed 0 previously had image-aware numbers only from the older v4.1 test</td><td><b>Done.</b> Stock 0.450 (identical to seeds 1 to 3), Grounding then TIDE 0.144</td></tr>
+<tr><td>MMStar (G2) under the image-aware judge: 1,396 images captioned, five cells judged (27,920 calls)</td><td>Transfer claim no longer rests on the text-only judge</td><td><b>Done.</b> Validated subset: stock 0.380, Grounding then TIDE 0.052 (paired difference -0.328 [-0.342, -0.313]); accuracy unchanged</td></tr>
+<tr><td>Image-aware judge on the 23 development-tier ablation cells (CS0 to CS5, gate, A5, A6, A7, B06, B11, B12, B13, B14, E3 on EVAL; 46,000 rows, about 10,000 new calls)</td><td>Every ablation currently rests on the text-only judge</td><td><b>Running</b> (lab PC, about 15 USD, finishes 11 November morning)</td></tr>
+<tr><td>Between-seed replication of A5, A6 and the matched CS5 cell on seeds 1 and 3 (fresh 800-step adapters, EVAL tier)</td><td>"Single-seed ablations indicate" becomes three seeds for the two decisive controls</td><td><b>Running</b> on the two lab GPUs (about 6 GPU-hours each); judging under both judges follows</td></tr>
+<tr><td>Blinded human validation of both judges (420 rows, strata role x cell x judge-agreement)</td><td>The review's main request; preregistered design in the supplement</td><td><b>In progress.</b> Labeller 1 finished 420/420; labeller 2 at 106/420; adjudicator waits; three extra annotator links issued</td></tr>
+</tbody></table></div>
+
+<h3>7.2 Review points and what answers each</h3>
+<div class="tbl"><table>
+<thead><tr><th>Review point</th><th>Answer</th><th>Where / when</th></tr></thead>
+<tbody>
+<tr><td>Judges validated only by a 38-row spot check</td><td>420-row blinded audit, two labellers plus adjudicator, kappa of each judge against adjudicated labels, confusion matrices per role, re-estimated cell rates under human labels</td><td>Supplement section "Human validation of the judges"; labels due 14 November, analysis script and registry ingest ready the same day</td></tr>
+<tr><td>Heavy reliance on two automatic judges; "judge U vs rule B" blurs mirage vs unsupported confidence</td><td>Image-aware judge is primary everywhere; both judges reported side by side on the 12 axes, MMStar and (after the running job) every ablation; Section 8 states the two events the judges measure</td><td>Done in the manuscript; ablation tables update 11 November</td></tr>
+<tr><td>False-abstention cost is seed-sensitive, limited guidance on controlling it</td><td>Four-seed table with the image-aware judge; the gate's coverage sweep (G0 to G2 at 90/95/99 percent) and the risk-coverage curve already give the operating points; add one paragraph of guidance (prefer Grounding then TIDE, pick the gate coverage on the probe tier)</td><td>Text, 12 November</td></tr>
+<tr><td>Comparisons to training-based abstention are indirect</td><td>A5 (generic refusal) and A6 (random negatives) replicated on three seeds; a Visual Contrastive Decoding inference baseline on the v5 TEST if time allows (2 GPU-hours plus judging)</td><td>Seeds: 11 November; VCD: decision pending</td></tr>
+<tr><td>Related work: EAGLE, CORAL/CGO, CLIP-UP, ViCoR, KAT</td><td>Add a paragraph placing TIDE among training-time versus post-hoc remedies and data-centric selection; cite all five</td><td>Section 2, 12 November</td></tr>
+<tr><td>Theory novelty is moderate; disjoint-support assumption</td><td>Keep the claims as stated; add the empirical overlap count (groups whose in-domain counterfactual shares the question's answer set) to the supplement</td><td>Analysis only, 13 November</td></tr>
+<tr><td>Question: decline wording and length</td><td>A7 (one shared string) and B11 (wording templates) already answer this on seed 2; both get image-aware numbers from the running job</td><td>11 November</td></tr>
+<tr><td>Question: calibrated thresholds on decline probability shifting the (F, M) frontier</td><td>Gate coverage sweep is that frontier for the projector path; a decline-token threshold sweep on the stored TIDE logits is analysis only</td><td>13 November if time</td></tr>
+<tr><td>Question: joint adapter-projector training to preserve the decision</td><td>Not run; stated as future work with the retention diagnostic as the reason</td><td>Limitations</td></tr>
+<tr><td>Question: cost of building in-domain wrong images for new domains</td><td>Describe the sampling rule (same tier, different content component) and the MMStar construction, which needed no annotation</td><td>Section 5 and the G2 supplement</td></tr>
+<tr><td>Question: selective-prediction loss jointly with TIDE; end-to-end workflow benefit</td><td>Not run; listed as future work</td><td>Limitations</td></tr>
+</tbody></table></div>
+
+<h3>7.3 The 45 roadmap entries that are not complete</h3>
+<p>Of the 112 planned experiments, 67 are complete (29 verified, 38 reported). The remaining 45 and what happens to each:</p>
+<div class="tbl"><table>
+<thead><tr><th>Entry</th><th>State</th><th>Disposition</th></tr></thead>
+<tbody>
+<tr><td>A01 Stock vs TIDE across six VLMs</td><td>partial</td><td>Closed by the 12-axis table (now 14 axes with the two extras in the supplement)</td></tr>
+<tr><td>A08 In-sequence vs cross-attention fusion; B18 second fusion architecture</td><td>blocked</td><td>Llama-3.2-11B (cross-attention) needs the v6 lock recertification; not before the deadline</td></tr>
+<tr><td>B09 Disjoint-support training</td><td>partial</td><td>Overlap count only (analysis), see 7.2</td></tr>
+<tr><td>B15 Adaptation location</td><td>partial</td><td>Report what exists (LM-side LoRA only); no new runs</td></tr>
+<tr><td>B17 Model scale under matched quantization</td><td>queued</td><td>32B and 72B stock and trained cells exist; add the scale row to the supplement from stored results (analysis only)</td></tr>
+<tr><td>C01 Leave-one-domain-out</td><td>dropped for CVPR</td><td>Stays dropped: the held-out domain leaks through out-of-domain counterfactuals; about 30 GPU-hours to do properly. Candidate for the next two days only if everything above lands early</td></tr>
+<tr><td>C03 Unanswerable-VQA benchmark</td><td>dropped for CVPR</td><td>Stays dropped (no label-compatible protocol)</td></tr>
+<tr><td>C04 Unseen counterfactual mechanisms</td><td>partial</td><td>MMStar's different construction already serves; state it explicitly</td></tr>
+<tr><td>C07 Leave-one-model-out aggregate; C08 cross-architecture recipe generalisation</td><td>planned / partial</td><td>Analysis only from the 12-axis results (11 November)</td></tr>
+<tr><td>D01 Three-seed TIDE replication</td><td>partial</td><td>Four Qwen seeds done; a second seed for Gemma-3 and InternVL3 is the one GPU item still open (about 10 GPU-hours per seed; decision needed)</td></tr>
+<tr><td>D02 Three-seed Real-SFT vs TIDE; D03 three-seed component ablation; D05 seed-by-model interaction</td><td>planned / deferred</td><td>D03 partly closed by the running A5/A6/CS5 replication; D02 and D05 stay deferred</td></tr>
+<tr><td>E12 CLIP-UP, E13 MM-UPD, E14 UNK-VQA, E15 Reliable VQA, E16 conventional OOD detector</td><td>dropped for CVPR</td><td>Discussed in related work instead of reimplemented; nine detectors already cover the post-hoc family</td></tr>
+<tr><td>F01 Large held-out human audit; F02 human-LLM agreement; F03 multiple judges; F05 judge-prompt sensitivity; F07 adjudication of disagreements</td><td>blocked / partial / planned</td><td>All closed by the running 420-row audit (F02, F03, F07) plus the stored two-model and two-rule comparisons (F05); F01 at the audit's size, not larger</td></tr>
+<tr><td>G06 Matched false-abstention operating points</td><td>partial</td><td>Analysis only from stored gate sweeps (12 November)</td></tr>
+<tr><td>H03 attention maps, H04 attention concentration, H05 RAPT probe, H08, H09, H12 to H15 (mechanistic)</td><td>deferred / dropped</td><td>Stay out of the CVPR paper; the probe results (H01, H02, H06, H07, H10, H11) are in</td></tr>
+<tr><td>H16 Separability-vs-failure correlation</td><td>partial</td><td>Analysis only from the stored probes (13 November)</td></tr>
+<tr><td>I05 Improved visual grounding; I06 calibration; I07 object hallucination</td><td>dropped / deferred</td><td>Stay out; HallusionBench covers the utility question</td></tr>
+<tr><td>J01 Multi-model success examples; J07 judge-disagreement examples</td><td>partial / planned</td><td>Fill from stored development-tier rows only (never test rows), 13 November</td></tr>
+<tr><td>K04 Baseline cost comparison; K06 reproducibility package</td><td>dropped / partial</td><td>K06: code, registry and lock bundle are the package; finish the README with the submission</td></tr>
+</tbody></table></div>
+
+<h3>7.4 Paper work before 16 November</h3>
+<ul>
+<li><b>Page cut:</b> the body runs 12.5 pages against the 8-page limit; the cut plan moves the single-model record, the gate ablations and the stress pilot to the supplement.</li>
+<li>Related-work paragraph (EAGLE, CORAL/CGO, CLIP-UP, ViCoR, KAT) and the abstention-cost guidance paragraph.</li>
+<li>Ablation tables with both judges once the running job lands; seed-replication rows for A5, A6, CS5.</li>
+<li>Human-validation section from design to result, with the registry records and claim C49.</li>
+<li>Decision on the TIDE expansion ("Training on Invalid-evidence Decline Examples") and on the "no detector at inference" phrasing.</li>
+</ul>
 
 <p class="note" style="margin-top:2rem">Terms. <b>Mirage</b>: a substantive answer to a question whose image is blank or unrelated. <b>I-MR</b>: mirages over invalid-evidence rows. <b>False abstention</b>: declining on a real, answerable image. <b>TIDE</b>: the final method, Grounding then C-Safety. Research-extension results are kept separate from main-paper claims; seed 2 only unless stated.</p>
 </div>
